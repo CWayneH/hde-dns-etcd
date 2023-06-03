@@ -1,4 +1,6 @@
 const server = require('fastify')();
+let ipaddr = process.argv[2];
+let srvport = process.argv[3];
 
 let host_prim = {
     name: "host1",
@@ -15,7 +17,8 @@ let host_secn = {
 };
 
 let hosts = [host_prim, host_secn];
-let hini = hosts;
+// deep copy of array
+let hini = JSON.parse(JSON.stringify(hosts));
 let errMsg = JSON.stringify({"error":"not found"});
 
 
@@ -26,7 +29,7 @@ server.get('/hdSimu', function (req, res) {
 
 server.get('/hdSimu/ini', function (req, res) {
     console.log('request url is '+req.url);
-	let hosts = hini;
+	hosts = JSON.parse(JSON.stringify(hini));
 	return hosts;
 });
 
@@ -80,9 +83,8 @@ server.put('/hdSimu/:name', function (req, res) {
 	return hosts[index];
 });
 
-
-server.listen(30001, "127.0.0.1");
+server.listen(srvport, ipaddr);
 /* 
 @author CWayneH
-https://github.com/CWayneH/DSys/tree/main/Lab2
+https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/host-data.js
 */
