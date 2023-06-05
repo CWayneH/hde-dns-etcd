@@ -1,87 +1,104 @@
 const server = require('fastify')();
 let ipaddr = process.argv[2];
 let srvport = process.argv[3];
+function between(min, max) {  
+  return Math.floor(
+    Math.random() * (max - min) + min
+  )
+}
 
-let host_prim = {
-    name: "host1",
-    workload: 0,
-    count: 0,
-    scores: 100
+let host_data = {
+	host: 'Host1',
+    workload: 0, //cumulative
+    count: 0, //cumulative
+	ms: 0, // disposable
+	node: 0, // disposable
+    scores: 100 //cumulative
 };
 
-let host_secn = {
-    name: "host2",
-    workload: 0,
-    count: 0,
-    scores: 100
-};
-
-let hosts = [host_prim, host_secn];
 // deep copy of array
-let hini = JSON.parse(JSON.stringify(hosts));
+let hini = JSON.parse(JSON.stringify(host_data));
 let errMsg = JSON.stringify({"error":"not found"});
 
 
 server.get('/hdSimu', function (req, res) {
     console.log('request url is '+req.url);
-	return hosts;
+	return host_data;
 });
 
+// maintenance
 server.get('/hdSimu/ini', function (req, res) {
     console.log('request url is '+req.url);
-	hosts = JSON.parse(JSON.stringify(hini));
-	return hosts;
+	host_data = JSON.parse(JSON.stringify(hini));
+	return host_data;
 });
 
-server.get('/hdSimu/:name/:service', function (req, res) {
+// url params:region(USA, EUR, ASI), service(homepage, APP, ..)
+// url query:perf(0,1,2)
+server.get('/hdSimu/:region/:service', function (req, res) {
     console.log('request url is '+req.url);
-	let dest = req.params.name;
+	
+	let from = req.params.region;
 	let usage = req.params.service;
-	let wl = 0;
+	let qry = req.query.perf;
+	console.log('query:'+qry);
+	
+	// node hopping
+	let n = 0;
+	if (from === 'USA')
+		n = between(3,5);
+	else if (from === 'EUR')
+		n = between(4,8);
+	else if (from === 'ASI')
+		n = between(1,4);
+	else
+		n = 9;
+	host_data.node = n;
+	// service usage
+	let wl = 0; //workload
 	if (usage === 'index.html')
 		wl = 10;
 	else
 		wl = 40;
+	host_data.workload+=wl;
+	// performance
+	let spd = 0;
+	switch (qry) {
+		case '0':
+			spd=200;
+			break;
+		case '1':
+			spd=100;
+			break;
+		case '2':
+			spd=10;
+			break;
+		default:
+			spd=1;
+	}
+	console.log('speed:'+spd);
+	host_data.ms = spd;
 	
-	// retrieve host w/ name
-	let host = hosts.find(element => element.name === req.params.name);
-	host.workload+=wl;
-	host.count++;
-	let w = host.count;
-	if (w <= 10)
-		w=1;
+	host_data.count++;
+	let cnt = host_data.count;
+	if (cnt <= 10)
+		cnt=1;
 	else
-		w=2;
-	host.scores+=-wl/10-w;
-	// console.log(dest+' :this host scores nowadays is '+hosts);
-	console.log(dest+' :this host scores nowadays is '+host.scores);
+		cnt=2;
 	
-	if (!host) {
+	// weighting example
+	host_data.scores+=-wl/10-cnt-n-spd/10;
+	
+	console.log(ipaddr+':'+srvport+' :this host scores nowadays is '+host_data.scores);
+	
+	if (!host_data) {
 		console.log(errMsg);
 		return errMsg;
 	}
 	else
-		return hosts;
+		return host_data;
 });
 
-server.post('/hdSimu', function (req, res) {
-    // 依Lab說明寫作
-	console.log('request url is '+req.url);
-	let newRider = req.body;
-	hosts.push(newRider);
-	return {count: hosts.length};
-});
-
-server.put('/hdSimu/:name', function (req, res) {
-    // 依Lab說明寫作
-	console.log('request url is '+req.url);
-	// retrieve index of name in query path
-	let index = hosts.findIndex(element => element.name === req.params.name);
-	console.log('update index:'+index+' with new data:');
-	console.log(req.body);
-	hosts[index]=req.body;
-	return hosts[index];
-});
 
 server.listen(srvport, ipaddr);
 /* 
