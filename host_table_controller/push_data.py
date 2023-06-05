@@ -24,7 +24,7 @@ def home():
 # input: {ip: ,count: ,priority: }
 @app.route("/refresh")
 def refresh():
-     response = requests.get('http://127.0.0.1:5001/fake_client')
+#      response = requests.get('http://127.0.0.1:5001/fake_client')
      new_dict=response.json()
      with open("table.json") as f :
         host_table=json.load(f)
