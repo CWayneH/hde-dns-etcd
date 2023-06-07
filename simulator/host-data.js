@@ -1,5 +1,6 @@
 const server = require('fastify')();
-const client = require('node-fetch');
+//const client = require('node-fetch');
+const client = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 let ipAddr = process.argv[2];
 let srvport = process.argv[3];
@@ -46,7 +47,15 @@ server.get('/hdSimu/:region/:service', function (req, res) {
     console.log('request url is '+req.url);
 	
 	let from = req.params.region;
-	let usage = req.params.service;
+	let srv = req.params.service;
+	// handle service dispatch
+	if (/APP/i.test(srv))
+		srv = 'APP';
+	else if (/FILE/i.test(srv))
+		srv = 'FILE';
+	else
+		srv = 'index.html';
+	let usage = srv;
 	let qry = req.query.perf;
 	console.log('query:'+qry);
 	
@@ -63,24 +72,30 @@ server.get('/hdSimu/:region/:service', function (req, res) {
 	
 	// service usage
 	let wl = 0; //workload
-	if (usage === 'index.html')
-		wl = 10;
+	if (usage === 'FILE')
+		wl = between(20,40);
+	else if (usage === 'APP')
+		wl = between(15,25);
 	else
-		wl = 40;
-	// performance
+		wl = 10;
+	// performance-workload tradeoff
 	let spd = 0;
 	switch (qry) {
 		case '0':
 			spd=between(101,200);
+			wl+=1000/spd;
 			break;
 		case '1':
 			spd=between(76,120);
+			wl+=900/spd;
 			break;
 		case '2':
-			spd=between(1,100);
+			spd=between(40,80);
+			wl+=800/spd;
 			break;
 		default:
 			spd=200;
+			wl+=5;
 	}
 	// console.log('speed:'+spd);
 	
@@ -88,15 +103,17 @@ server.get('/hdSimu/:region/:service', function (req, res) {
 	host_data.region = from;
 	host_data.service = usage;
 	host_data.ctlPerf = qry;
-	host_data.workload+=wl;
+	host_data.workload+=Math.round(wl);
 	host_data.ms = spd;
 	host_data.count++;
 	// simulate weight of count
+	/*
 	let w = host_data.count;
 	if (w <= 10)
 		w=1;
 	else
 		w=2;
+	*/
 	
 	// weighting example
 	// host_data.scores+=-wl/10-w-n-spd/10;
