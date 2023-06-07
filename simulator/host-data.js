@@ -1,6 +1,9 @@
 const server = require('fastify')();
-let ipaddr = process.argv[2];
+const client = require('node-fetch');
+
+let ipAddr = process.argv[2];
 let srvport = process.argv[3];
+let rdAddr = process.argv[4];
 function between(min, max) {  
   return Math.floor(
     Math.random() * (max - min) + min
@@ -8,12 +11,15 @@ function between(min, max) {
 }
 
 let host_data = {
-	host: 'Host1',
+	host: ipAddr,
+	region: '',
+	service: '',
+	ctlPerf: -1,
     workload: 0, //cumulative
     count: 0, //cumulative
 	ms: 0, // disposable
 	node: 0, // disposable
-    scores: 100 //cumulative
+    //scores: 100 //cumulative
 };
 
 // deep copy of array
@@ -23,6 +29,7 @@ let errMsg = JSON.stringify({"error":"not found"});
 
 server.get('/hdSimu', function (req, res) {
     console.log('request url is '+req.url);
+	//res.redirect(host_data,redir+":8443/check");
 	return host_data;
 });
 
@@ -53,43 +60,62 @@ server.get('/hdSimu/:region/:service', function (req, res) {
 		n = between(1,4);
 	else
 		n = 9;
-	host_data.node = n;
+	
 	// service usage
 	let wl = 0; //workload
 	if (usage === 'index.html')
 		wl = 10;
 	else
 		wl = 40;
-	host_data.workload+=wl;
 	// performance
 	let spd = 0;
 	switch (qry) {
 		case '0':
-			spd=200;
+			spd=between(101,200);
 			break;
 		case '1':
-			spd=100;
+			spd=between(76,120);
 			break;
 		case '2':
-			spd=10;
+			spd=between(1,100);
 			break;
 		default:
-			spd=1;
+			spd=200;
 	}
-	console.log('speed:'+spd);
-	host_data.ms = spd;
+	// console.log('speed:'+spd);
 	
+	host_data.node = n;
+	host_data.region = from;
+	host_data.service = usage;
+	host_data.ctlPerf = qry;
+	host_data.workload+=wl;
+	host_data.ms = spd;
 	host_data.count++;
-	let cnt = host_data.count;
-	if (cnt <= 10)
-		cnt=1;
+	// simulate weight of count
+	let w = host_data.count;
+	if (w <= 10)
+		w=1;
 	else
-		cnt=2;
+		w=2;
 	
 	// weighting example
-	host_data.scores+=-wl/10-cnt-n-spd/10;
+	// host_data.scores+=-wl/10-w-n-spd/10;
+	// console.log(ipAddr+':'+srvport+' :this host scores nowadays is '+host_data.scores);
 	
-	console.log(ipaddr+':'+srvport+' :this host scores nowadays is '+host_data.scores);
+	// forward to collector
+	let redUrl = "http://"+rdAddr+":8443/add";
+	console.log(redUrl);
+	
+	(async () => {
+		const rpons = await client(redUrl, {
+			method: 'POST',
+			headers: {'Content-Type':'application/json'},
+			body: JSON.stringify(host_data)
+		});
+		const data = await rpons.json();
+		console.log(data);
+	})();
+
 	
 	if (!host_data) {
 		console.log(errMsg);
@@ -100,7 +126,7 @@ server.get('/hdSimu/:region/:service', function (req, res) {
 });
 
 
-server.listen(srvport, ipaddr);
+server.listen(srvport, ipAddr);
 /* 
 @author CWayneH
 https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/host-data.js
