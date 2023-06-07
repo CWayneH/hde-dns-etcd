@@ -32,7 +32,7 @@ while ($true) {
 for($i=0;$i-lt10;$i++){
 	# totally GET method in simplify
 	$pf = $pf1, $pf2, $pf3 | Get-Random;
-	$srv = $srv1, $srv2 | Get-Random;
+	$srv = $srv1, $srv2, $srv3 | Get-Random;
 	$r = $r1, $r2, $r3 | Get-Random;
 	$url = $url1, $url2 | Get-Random;
 	$data = Invoke-RestMethod $url$r$srv$pf;
