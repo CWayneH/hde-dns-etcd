@@ -149,5 +149,5 @@ server.get('/hdSimu/:region/:service', function (req, res) {
 server.listen(srvport, ipAddr);
 /* 
 @author CWayneH
-https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/host-data.js
+https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/host-raw-data.js
 */
