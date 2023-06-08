@@ -86,5 +86,5 @@ server.post('/add', function (req, res) {
 server.listen(8443, ipaddr);
 /* 
 @author CWayneH
-https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/host-data-collector.js
+https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/hosts-data-collector.js
 */
