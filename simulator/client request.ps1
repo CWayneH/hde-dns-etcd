@@ -1,4 +1,5 @@
 # http://127.0.0.1:30001/hdSimu/ASI/index.html?perf=2
+<#
 $url1 = "http://192.168.0.180:30001/hdSimu/"
 $url2 = "http://192.168.0.190:30001/hdSimu/"
 $url3 = "http://192.168.0.200:30001/hdSimu/"
@@ -10,6 +11,8 @@ $url8 = "http://192.168.0.250:30001/hdSimu/"
 $url_a = $url1, $url2
 $url_b = $url3, $url4, $url5
 $url_c = $url6, $url7, $url8
+#>
+$url = (Import-Csv -Path .\hostmap.csv).IP | ForEach-Object -Process {'http://'+$_+':30001/hdSimu/'}
 $reg1 = "USA/"
 $reg2 = "EUR/"
 $reg3 = "ASI/"
@@ -50,7 +53,7 @@ function random_curl {
 }
 for($i=0;$i-lt10;$i++){
 	# totally GET method in simplify
-	random_curl $url_a $reg $srv $pf;
-	random_curl $url_b $reg $srv $pf;
-	random_curl $url_c $reg $srv $pf;
+	# random_curl $url_a $reg $srv $pf;
+	# random_curl $url_b $reg $srv $pf;
+	random_curl $url $reg $srv $pf;
 	}
