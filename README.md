@@ -13,3 +13,5 @@ We capture each entry of request and store necessary information for data scienc
 - node: how many hopping nodes which depends on region of request.
 ### where is the host data heading to?
 While capturing each host data, we will send to collector for management; and then, this mechanism through controller to pack up effective data for transferring with HTTP method overall the procedure.
+
+<img src="https://github.com/CWayneH/hde-dns-etcd/assets/90815681/a6033c3e-11d6-49dd-8e00-4803637d2bc4" width="60%" height="60%" alt="flow chart">
