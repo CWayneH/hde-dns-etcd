@@ -9,15 +9,19 @@ from firebase_admin import credentials
 from firebase_admin import db,firestore
 import os
 import time
+import pandas as pd 
 
 
-f=open("./")
-
+host_table=pd.read_csv("outcome.csv")
 
 app = Flask(__name__)
 
-# @app.route("/")
-# def push_data():
+@app.route("/")
+def push_data():
+    
+    return hosts
+    
+    
     
 
 # name = "example.com"
