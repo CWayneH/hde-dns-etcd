@@ -1,27 +1,29 @@
-@ECHO off
+rem @ECHO off
 rem ECHO "add ipv4 into interface"
 rem FOR /L %A IN (170,10,240) DO netsh interface ipv4 add address "Wi-Fi" 10.0.1.%A 255.255.255.0
 ECHO "move to working directory"
 PAUSE
 rem pass working path to %1
 rem "D:\Wayne\DSys\etcd"
-cd %1
+cd /D %1
 rem %2 for env
 call conda activate %2
 ECHO "start host node.."
 rem %3 for domain IP
-start "collector" node hosts-data-collector.js %3.170
-FOR /L %%A IN (180,10,240) DO start "host%%A" node host-raw-data.js %3.%%A% 30001 %3%.170
-start "host182" node host-data.js %3.182 30001 %3.170
-start "host193" node host-data.js %3.193 30001 %3.170
-start "host196" node host-data.js %3.196 30001 %3.170
-start "host201" node host-data.js %3.201 30001 %3.170
-start "host202" node host-data.js %3.202 30001 %3.170
-start "host218" node host-data.js %3.218 30001 %3.170
-start "host226" node host-data.js %3.226 30001 %3.170
-start "host236" node host-data.js %3.236 30001 %3.170
-start "host241" node host-data.js %3.241 30001 %3.170
-start "host242" node host-data.js %3.242 30001 %3.170
+start "collector" node hosts-data-collector.js" %3.170
+rem ugly but fine: D:\Wayne\DSys\etcd\dataeng\openode.bat D:\Wayne\DSys\etcd\dataeng dsys_lab 192.168.0 " 30001
+FOR /L %%A IN (180,10,240) DO start "host%%A" node host-raw-data.js "%3.%%A% %%4 %3.170
+PAUSE
+start "host182" node host-raw-data.js %3.182 30001 %3.170
+start "host193" node host-raw-data.js %3.193 30001 %3.170
+start "host196" node host-raw-data.js %3.196 30001 %3.170
+start "host201" node host-raw-data.js %3.201 30001 %3.170
+start "host202" node host-raw-data.js %3.202 30001 %3.170
+start "host218" node host-raw-data.js %3.218 30001 %3.170
+start "host226" node host-raw-data.js %3.226 30001 %3.170
+start "host236" node host-raw-data.js %3.236 30001 %3.170
+start "host241" node host-raw-data.js %3.241 30001 %3.170
+start "host242" node host-raw-data.js %3.242 30001 %3.170
 ECHO "Prepare to kill host process"
 PAUSE
 FOR /L %%A IN (180,10,240) DO taskkill /FI "WindowTitle eq host%%A" /T /F
