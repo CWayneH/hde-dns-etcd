@@ -5,12 +5,13 @@ const client = (...args) => import('node-fetch').then(({default: fetch}) => fetc
 let ipAddr = process.argv[2];
 let srvport = process.argv[3];
 let rdAddr = process.argv[4];
+// random by range
 function between(min, max) {  
   return Math.floor(
     Math.random() * (max - min) + min
   )
 }
-
+// data initial
 let host_data = {
 	host: ipAddr,
 	region: '',
@@ -21,6 +22,7 @@ let host_data = {
 	ms: 0, // disposable
 	node: 0, // disposable
     //scores: 100 //cumulative
+	ts: -1 // timestamp
 };
 
 // deep copy of array
@@ -106,6 +108,7 @@ server.get('/hdSimu/:region/:service', function (req, res) {
 	host_data.workload+=Math.round(wl);
 	host_data.ms = spd;
 	host_data.count++;
+	host_data.ts = Date.now();
 	// simulate weight of count
 	/*
 	let w = host_data.count;
@@ -146,5 +149,5 @@ server.get('/hdSimu/:region/:service', function (req, res) {
 server.listen(srvport, ipAddr);
 /* 
 @author CWayneH
-https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/host-data.js
+https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/host-raw-data.js
 */
