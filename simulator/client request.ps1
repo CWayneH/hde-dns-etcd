@@ -1,5 +1,5 @@
 # http://127.0.0.1:30001/hdSimu/ASI/index.html?perf=2
-# 
+# retrieve ip address of url from mapping table
 $url = (Import-Csv -Path .\outcome.csv).priIP | ForEach-Object -Process {'http://'+$_+':30001/hdSimu/'}
 $reg1 = "USA/"
 $reg2 = "EUR/"
