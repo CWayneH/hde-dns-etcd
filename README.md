@@ -11,7 +11,44 @@ We capture each entry of request and store necessary information for data scienc
 - count: what time this host be connected from last reset.
 - ms: how fast is the most recent response.
 - node: how many hopping nodes which depends on region of request.
+
+[raw data example](../main/data%20engine/raw_data_example.csv)
 ### where is the host data heading to?
 While capturing each host data, we will send to collector for management; and then, this mechanism through controller to pack up effective data for transferring with HTTP method overall the procedure.
 
 <img src="https://github.com/CWayneH/hde-dns-etcd/assets/90815681/a6033c3e-11d6-49dd-8e00-4803637d2bc4" width="60%" height="60%" alt="flow chart">
+
+### data structure
+#### this [table](../main/data%20engine/outcome.csv) we maintained and would provide to etcd
+| host | priIP | rbstatus |
+| :---         |     :---:      |          ---: |
+|NSD.com|192.168.0.182|0|
+|BDS.com|192.168.0.190|0|
+|CLIP.com|192.168.0.200|0|
+|NCCUCS.com|192.168.0.210|0|
+|NCCU.com|192.168.0.220|0|
+|BTSLIN.com|192.168.0.236|0|
+|unionlab.com|192.168.0.240|0|
+
+#### behind this of above, we took care of each host IP status and priority calculation
+|host|IP|status|scores|
+|:---|:---:|---:|---:|
+|BTSLIN.com|192.168.0.180|1|0|
+|BTSLIN.com|192.168.0.182|1|0|
+|NCCUCS.com|192.168.0.190|1|0|
+|NCCUCS.com|192.168.0.193|1|0|
+|NCCUCS.com|192.168.0.196|1|0|
+|NCCU.com|192.168.0.200|1|0|
+|NCCU.com|192.168.0.201|1|0|
+|NCCU.com|192.168.0.202|0|0|
+|NSD.com|192.168.0.210|1|0|
+|NSD.com|192.168.0.218|1|0|
+|BDS.com|192.168.0.220|1|0|
+|BDS.com|192.168.0.226|1|0|
+|CLIP.com|192.168.0.230|1|0|
+|CLIP.com|192.168.0.236|1|0|
+|unionlab.com|192.168.0.240|0|0|
+|unionlab.com|192.168.0.241|1|0|
+|unionlab.com|192.168.0.242|1|0|
+
+[table](../main/data%20engine/hostmap.csv)
