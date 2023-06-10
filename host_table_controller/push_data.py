@@ -24,7 +24,6 @@ def rand_pick():
             if index==dead_one:
                   host_table.at[index, 'rbstatus'] = 1
                   print("drop index ",index, row )
-      print(host_table)
       host_table.to_csv("../data engine/outcome.csv",index = False )
 
 def push_data():
@@ -32,16 +31,12 @@ def push_data():
 #     print(host_table.shape)
     host_dict={}
     for index, row in host_table.iterrows(): 
-          if row['rbstatus']==0:
-                host_dict[row['host']]=row['priIP']
-    print(len(host_dict))
-    response = requests.post('http://127.0.0.1:3001/test',data=host_dict,params=host_dict)
-    print(response.text)
+        if row['rbstatus']==0:
+                response = requests.post('http://127.0.0.1:9453/',params={'Domain':row['host'],'IP':row['priIP']})
     return host_dict
 
 if __name__ == "__main__":
        while True:
-             time.sleep(5)
+             time.sleep(30)
              rand_pick()
              k=push_data()
-             print(k)
