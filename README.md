@@ -1,5 +1,6 @@
 # HDE-DNS-etcd
 Host Data Engine(HDE) for KV of name mapping priority in etcd store.
+About How to make our Data interpretability.
 ### what host data stand for?
 Basically, the client accesses services according to priority IP recommended; then we capture each entry of request for collection and process into necessary information for data science.
 ### host data component
