@@ -1,15 +1,16 @@
 # HDE-DNS-etcd
 Host Data Engine(HDE) for KV of name mapping priority in etcd store.
 ### what host data stand for?
-We capture each entry of request and store necessary information for data science.
+Basically, the client accesses services according to priority IP recommended; then we capture each entry of request for collection and process into necessary information for data science.
 ### host data component
-- host: request host IP address.
-- region: where this request from?
-- service: what services be requested, lead to the load the host takes.
-- ctlPerf: how this service be needed?
-- workload: how weight this host be monitored, corresponding to reset trigger.
+#### take the http-get `http://127.0.0.1:30001/hdSimu/ASI/index.html?perf=2` for example. [reference from simulator.](../main/simulator/client%20request.ps1)
+- host: request host IP address. `e.g.` 127.0.0.1
+- region: where this request from? `e.g.` ASI for ASIA
+- service: what services be requested, lead to the load the host takes. `e.g.` index.html for WebUI unit
+- ctlPerf: how this service be needed? `e.g.` 2 for speed required
+- workload: how weight this host be monitored, tradeoff between performance and workload.
 - count: what time this host be connected from last reset.
-- ms: how fast is the most recent response.
+- ms: how fast is the most recent response, corresponding to the workload.
 - node: how many hopping nodes which depends on region of request.
 
 [raw data example](../main/data%20engine/raw_data_example.csv)
@@ -51,4 +52,4 @@ While capturing each host data, we will send to collector for management; and th
 |unionlab.com|192.168.0.241|1|0|
 |unionlab.com|192.168.0.242|1|0|
 
-[table](../main/data%20engine/hostmap.csv)
+[data table reference](../main/data%20engine/hostmap.csv)
