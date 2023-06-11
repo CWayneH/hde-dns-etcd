@@ -1,6 +1,6 @@
 const server = require('fastify')();
-//const client = require('node-fetch');
-const client = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const client = require('node-fetch');
+// const client = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 let ipAddr = process.argv[2];
 let srvport = process.argv[3];
@@ -28,7 +28,6 @@ let host_data = {
 // deep copy of array
 let hini = JSON.parse(JSON.stringify(host_data));
 let errMsg = JSON.stringify({"error":"not found"});
-
 
 server.get('/hdSimu', function (req, res) {
     console.log('request url is '+req.url);
