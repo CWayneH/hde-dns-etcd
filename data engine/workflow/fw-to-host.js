@@ -47,5 +47,5 @@ server.post('/hdSimu/:region/:service', function (req, res) {
 server.listen(srvport, ipAddr);
 /* 
 @author CWayneH
-https://github.com/CWayneH/DSys/tree/main/Lab2
+https://github.com/CWayneH/hde-dns-etcd/blob/main/simulator/fw-to-host.js
 */
