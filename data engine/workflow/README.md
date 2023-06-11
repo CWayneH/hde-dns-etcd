@@ -1,5 +1,5 @@
 ## Workflow
-### This contains all steps for HDE demo.
+### This contains all steps for HDE demo; in addition to this, some maintenance batch tool included.
 - run netman.bat to activate network interface
 `netman.bat add "乙太網路" 192.168.0`
 - open [17 distributed host](../host-raw-data.js) for services and 1 [collector host](../hosts-data-collector.js).
