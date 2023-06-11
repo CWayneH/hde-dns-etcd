@@ -8,7 +8,7 @@ data.raw.fn <- args[1]
 hostmap.fn <- args[2]
 out.fn <- args[3]
 
-# data.raw.fn <- '20230610031336-hosts_data.csv'
+# data.raw.fn <- '20230611021027-hosts_data.csv'
 df <- read.csv(data.raw.fn)
 # table(df$service)
 # table(df$host)
@@ -46,19 +46,21 @@ scores.fac <- function(data){
 # alive if overnode
 host.status <- function(n){
   s <- 1
-  if (sum(n)>10) s <- 0
+  if (sum(n)>30) s <- 0
   return(s)
 }
 
 # hostmap.fn <- 'hostmap.csv'
-hostmap <- read.csv(hostmap.fn)
+hostmap <- read.csv(hostmap.fn, stringsAsFactors = FALSE)
+hostmap$status <- 1
 # finish score calculation
 # scores <- c()
 for (hostip in unique(df$host)) {
   print(hostip)
   d.host <- df[df$host==hostip,]
-  hostmap[hostmap$IP==hostip,"scores"] <- scores.fac(d.host)
-  hostmap[hostmap$IP==hostip,"status"] <- host.status(d.host$node)
+  hosta <- host.status(d.host$node)
+  hostmap[hostmap$IP==hostip,"status"] <- hosta
+  hostmap[hostmap$IP==hostip,"scores"] <- ifelse(!hosta,0,scores.fac(d.host))
   # scores <- c(scores, scores.fac(d.host))
   # print(scores)
 }
@@ -68,16 +70,23 @@ write.csv(hostmap, file = hostmap.fn, row.names = FALSE)
 # hostmap$status <- c(rep(1,14),0,0,0)
 # choos available host
 h.s.1 <- hostmap[hostmap$status==1,]
-candi.ip <- c()
+out <- read.csv(out.fn, stringsAsFactors = FALSE)
+out$rbstatus <- 0
+# candi.ip <- c()
 for (host.main in unique(hostmap$host)) {
   print(host.main)
   h.sec <- h.s.1[h.s.1$host==host.main,]
   print(h.sec)
+  if(!length(row.names(h.sec)))
+    out[out$host==host.main,"rbstatus"] <- 1
+  else
+    out[out$host==host.main,"priIP"] <- h.sec$IP[which.max(h.sec$scores)]
   print(h.sec$IP[which.max(h.sec$scores)])
-  candi.ip <- c(candi.ip, h.sec$IP[which.max(h.sec$scores)])
+  # candi.ip <- c(candi.ip, h.sec$IP[which.max(h.sec$scores)])
 }
 
 # out.fn <- 'outcome.csv'
-out <- read.csv(out.fn)
-out$priIP <- h.s.1[candi.ip,"IP"]
+# out$priIP <- h.s.1[candi.ip,"IP"]
 write.csv(out, file = out.fn, row.names = FALSE)
+# author@CWayneH
+# version 1.0
