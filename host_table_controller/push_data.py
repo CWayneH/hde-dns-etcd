@@ -1,13 +1,5 @@
-import json
-import flask
 from flask import jsonify,Flask,request
 import requests
-import etcd
-from firebase import firebase
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db,firestore
-import os
 import time
 import pandas as pd 
 import random
