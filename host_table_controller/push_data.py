@@ -32,11 +32,14 @@ def push_data():
     host_dict={}
     for index, row in host_table.iterrows(): 
         if row['rbstatus']==0:
-                response = requests.post('http://127.0.0.1:9453/',params={'Domain':row['host'],'IP':row['priIP']})
+                payload = {'Domain':row['host'],'Ip':row['priIP']}
+                response = requests.post('http://172.20.10.5:50000/',json=payload)
+                print(response.text)
     return host_dict
 
 if __name__ == "__main__":
        while True:
-             time.sleep(30)
+             time.sleep(3)
              rand_pick()
              k=push_data()
+             
