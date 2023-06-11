@@ -24,6 +24,7 @@ start "host226" node host-raw-data.js %3.226 30001 %3.170
 start "host236" node host-raw-data.js %3.236 30001 %3.170
 start "host241" node host-raw-data.js %3.241 30001 %3.170
 start "host242" node host-raw-data.js %3.242 30001 %3.170
+rem start "FWinterface" node fw-to-host.js 172.20.10.2 30001
 ECHO "Prepare to kill host process"
 PAUSE
 FOR /L %%A IN (180,10,240) DO taskkill /FI "WindowTitle eq host%%A" /T /F
@@ -37,6 +38,7 @@ taskkill /FI "WindowTitle eq host226" /T /F
 taskkill /FI "WindowTitle eq host236" /T /F
 taskkill /FI "WindowTitle eq host241" /T /F
 taskkill /FI "WindowTitle eq host242" /T /F
+rem taskkill /FI "WindowTitle eq FWinterface" /T /F
 ECHO "Prepare to kill collector process"
 PAUSE
 taskkill /FI "WindowTitle eq collector" /T /F
