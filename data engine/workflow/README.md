@@ -14,7 +14,7 @@
    ```
 - while collecting enough data, call collector seize interface; then mechanism will write a .csv file in server-end.
    ```
-   curl http://192.168.0.170:8443/seize
+   curl http://{collector IP}:8443/seize
    ```
 - we use [R script](../data%20process.R) for data analysis, that processing hosts data to output priority IP address.
    ```
