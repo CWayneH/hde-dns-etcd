@@ -10,3 +10,5 @@
 `http://192.168.0.170:8443/seize`
 - we use R script for data analysis, that processing hosts data to output priority IP address.
 `Rscript "data process.R" hosts_data.csv hostmap.csv outcome.csv`
+- after all, we push outcome in .py code regularly.
+`python push_data.py`
