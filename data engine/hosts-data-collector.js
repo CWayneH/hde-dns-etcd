@@ -38,6 +38,7 @@ let ipaddr = process.argv[2];
 
 let errMsg = JSON.stringify({"error":"not found"});
 let hosts = [];
+let bak = [];
 
 // [{"host":"192.168.137.180","region":"ASI","service":"APP","ctlPerf":"2","workload":37,"count":1,"ms":44,"node":1}]
 server.get('/seize', function (req, res) {
@@ -45,6 +46,7 @@ server.get('/seize', function (req, res) {
 	if (!!hosts.length)
 	{
 		let optFN = format(new Date())+'-hosts_data.csv';
+		// let optFN = format('hosts_data.csv');
 		(async () => {
 		  await json2csvFile(optFN, hosts);
 		  console.log(`Successfully converted ${optFN}!`);
@@ -57,10 +59,11 @@ server.get('/seize', function (req, res) {
 server.get('/copy', function (req, res) {
     console.log('request url is '+req.url);
 	// deep copy of array
-	let bak = JSON.parse(JSON.stringify(hosts));
+	bak = JSON.parse(JSON.stringify(hosts));
 	hosts = [];
 	return bak;
 });
+
 // need to /copy first
 server.get('/backup', function (req, res) {
     console.log('request url is '+req.url);
@@ -73,14 +76,6 @@ server.get('/backup', function (req, res) {
 		})();
 	}
 	return bak;
-});
-
-server.post('/add', function (req, res) {
-    // 依Lab說明寫作
-	console.log('request url is '+req.url);
-	let addHost = req.body;
-	hosts.push(addHost);
-	return { hosts_count: hosts.length};
 });
 
 server.listen(8443, ipaddr);
