@@ -21,7 +21,7 @@ While capturing each host data, we will send to collector for management; and th
 <img src="https://github.com/CWayneH/hde-dns-etcd/assets/90815681/a6033c3e-11d6-49dd-8e00-4803637d2bc4" width="60%" height="60%" alt="flow chart">
 
 ### data structure
-#### this [table](../main/data%20engine/outcome.csv) we maintained and would dynamic update to etcd
+#### this [table](../main/workflow/outcome.csv) we maintained and would dynamic update to etcd
 | host | priIP | rbstatus |
 | :---         |     :---:      |          ---: |
 |NSD.com|192.168.0.182|0|
@@ -53,4 +53,4 @@ While capturing each host data, we will send to collector for management; and th
 |unionlab.com|192.168.0.241|1|0|
 |unionlab.com|192.168.0.242|1|0|
 
-[data table for example](../main/data%20engine/hostmap.csv)
+[data table for example](../main/workflow/hostmap.csv)
