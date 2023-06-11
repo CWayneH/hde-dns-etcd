@@ -46,6 +46,7 @@ server.get('/seize', function (req, res) {
 	if (!!hosts.length)
 	{
 		let optFN = format(new Date())+'-hosts_data.csv';
+		// let optFN = format('hosts_data.csv');
 		(async () => {
 		  await json2csvFile(optFN, hosts);
 		  console.log(`Successfully converted ${optFN}!`);
