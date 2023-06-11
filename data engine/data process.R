@@ -8,15 +8,8 @@ data.raw.fn <- args[1]
 hostmap.fn <- args[2]
 out.fn <- args[3]
 
-# data.raw.fn <- '20230611021027-hosts_data.csv'
+# data.raw.fn <- '20230611194015-hosts_data.csv'
 df <- read.csv(data.raw.fn)
-# table(df$service)
-# table(df$host)
-# df[1,4]+df[2,4]
-# hostmap[hostmap$host=='Host1','IP']
-# df[df$host==c('192.168.0.180','192.168.0.190'),1]
-# df$host==c('192.168.0.180','192.168.0.190')
-# colnames(df)
 
 # scores factor
 scores.fac <- function(data){
@@ -28,30 +21,16 @@ scores.fac <- function(data){
   return(sum(cp.fac,wl.fac,cnt.fac,ms.fac))
 }
 
-# df.1000 <- head(df,1000)
-# scores <- c()
-# # plus
-# cp <- df.1000[df.1000$host=='192.168.0.180',"ctlPerf"]
-# cp <- table(cp)
-# mean(cp*1:3)
-# table(df.1000[df.1000$host=='192.168.0.180',"ctlPerf"])*1:3
-# # minus
-# max(df.1000[df.1000$host=='192.168.0.180',"workload"])
-# # minus
-# max(df.1000[df.1000$host=='192.168.0.180',"count"])
-# # minus
-# ms <- df.1000[df.1000$host=='192.168.0.180',"ms"]
-# ams <- mean(ms)
-
 # alive if overnode
 host.status <- function(n){
   s <- 1
-  if (sum(n)>30) s <- 0
+  if (sum(n)>1000) s <- 0
   return(s)
 }
 
 # hostmap.fn <- 'hostmap.csv'
 hostmap <- read.csv(hostmap.fn, stringsAsFactors = FALSE)
+# reset to 1 to recalculate status
 hostmap$status <- 1
 # finish score calculation
 # scores <- c()
@@ -70,7 +49,9 @@ write.csv(hostmap, file = hostmap.fn, row.names = FALSE)
 # hostmap$status <- c(rep(1,14),0,0,0)
 # choos available host
 h.s.1 <- hostmap[hostmap$status==1,]
+# out.fn <- 'outcome.csv'
 out <- read.csv(out.fn, stringsAsFactors = FALSE)
+# reset to 0 to recalculate reboot status
 out$rbstatus <- 0
 # candi.ip <- c()
 for (host.main in unique(hostmap$host)) {
@@ -85,7 +66,6 @@ for (host.main in unique(hostmap$host)) {
   # candi.ip <- c(candi.ip, h.sec$IP[which.max(h.sec$scores)])
 }
 
-# out.fn <- 'outcome.csv'
 # out$priIP <- h.s.1[candi.ip,"IP"]
 write.csv(out, file = out.fn, row.names = FALSE)
 # author@CWayneH
